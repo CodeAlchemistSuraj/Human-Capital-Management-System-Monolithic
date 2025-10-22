@@ -1,0 +1,257 @@
+/* DashboardStyles.css */
+
+/* Layout */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6fb;
+}
+
+.sidebar {
+  width: 250px;
+  background: #232b4d;
+  color: #fff;
+  min-height: 100vh;
+  position: fixed;
+  top: 64px; /* Offset by navbar height */
+  left: 0;
+  transition: transform 0.3s ease;
+  z-index: 100;
+  height: calc(100vh - 64px);
+}
+
+.sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.dashboard-main {
+  flex: 1;
+  margin-left: 250px;
+  transition: margin-left 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar-closed {
+  margin-left: 0 !important;
+}
+
+/* .dashboard-content {
+  flex: 1;
+  background: #2c4074;
+  min-height: calc(100vh - 64px);
+} */
+
+/* Sidebar Navigation */
+.sidebar-nav {
+  padding: 2rem 0;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 2rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.sidebar-item.active,
+.sidebar-item:hover {
+  background: #374151;
+  color: #fff;
+  border-left: 4px solid #6366f1;
+}
+
+.sidebar-icon {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+/* Navbar */
+.navbar {
+  height: 64px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 101;
+}
+
+.navbar-menu-toggle {
+  background: none;
+  border: none;
+  color: #232b4d;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.navbar-brand-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #232b4d;
+  text-decoration: none;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-user-image {
+  width: 32px;
+  height: 32px;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-welcome {
+  font-weight: 500;
+  color: #232b4d;
+}
+
+.navbar-logout {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-login {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Header Styles */
+.header {
+  width: 100%;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  padding: 0.5rem 0;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+}
+
+.header-left {
+  flex: 1;
+  color: #6366f1;
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.header-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6366f1 0%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-welcome {
+  color: #232b4d;
+  font-weight: 200;
+  font-size: 1rem;
+}
+
+.header-additional {
+  color: #6366f1;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 64px;
+    height: calc(100vh - 64px);
+    z-index: 200;
+    width: 220px;
+  }
+  .dashboard-main {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 1rem;
+  }
+  .navbar {
+    padding: 0 1rem;
+  }
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  .header-center {
+    justify-content: flex-start;
+  }
+  .header-title {
+    font-size: 1.3rem;
+  }
+}

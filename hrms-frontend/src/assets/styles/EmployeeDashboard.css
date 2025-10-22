@@ -1,0 +1,111 @@
+/* EmployeeDashboard.css */
+.employee-dashboard-container {
+  max-width: 1400px;
+  margin: 1.5rem auto;
+  padding: 1.2rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.welcome-banner {
+  background: linear-gradient(90deg, #232b4d 0%, #6366f1 100%);
+  padding: 1.2rem;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.primary-column,
+.secondary-column,
+.tertiary-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.uniform-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.uniform-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.uniform-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-blue-gradient {
+  background: #2563eb;
+}
+
+.header-green-gradient {
+  background: #059669;
+}
+
+.header-purple-gradient {
+  background: #7c3aed;
+}
+
+.header-orange-gradient {
+  background: #ea580c;
+}

@@ -1,0 +1,362 @@
+/* HRDashboard.css */
+.hr-dashboard-container {
+  max-width: 1400px;
+  margin: 1.5rem auto;
+  padding: 1.2rem;
+  background: #f8fafc;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.welcome-banner {
+  background: linear-gradient(90deg, #059669 0%, #6366f1 100%);
+  padding: 1.2rem;
+  border-radius: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.primary-column,
+.secondary-column,
+.tertiary-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.uniform-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.uniform-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.uniform-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-blue-gradient {
+  background: #2563eb;
+}
+
+.header-green-gradient {
+  background: #059669;
+}
+
+.header-orange-gradient {
+  background: #ea580c;
+}
+
+.header-purple-gradient {
+  background: #7c3aed;
+}
+
+.header-yellow-gradient {
+  background: #d97706;
+}
+
+.header-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.card-body {
+  padding: 1rem;
+  color: #1f2937;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.card-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.profile-image {
+  width: 48px;
+  height: 48px;
+  background: #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.profile-details p {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #4b5563;
+  width: 120px;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-online {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.status-in-progress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.leave-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leave-table thead {
+  background: #f3f4f6;
+}
+
+.leave-table th {
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.leave-table td {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.leave-table th:first-child,
+.leave-table td:first-child {
+  width: 30%;
+}
+
+.leave-table th:nth-child(2),
+.leave-table td:nth-child(2) {
+  width: 20%;
+}
+
+.leave-table th:nth-child(3),
+.leave-table td:nth-child(3) {
+  width: 15%;
+}
+
+.leave-table th:last-child,
+.leave-table td:last-child {
+  width: 25%;
+}
+
+.pipeline-list,
+.event-list,
+.onboarding-list {
+  list-style: none;
+  margin-top: 0.5rem;
+}
+
+.pipeline-item,
+.event-item,
+.onboarding-item {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+  transition: background 0.2s ease;
+}
+
+.pipeline-item:hover,
+.event-item:hover,
+.onboarding-item:hover {
+  background: #f3f4f6;
+}
+
+.pipeline-stage,
+.event-title,
+.onboarding-employee {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+  flex: 1;
+}
+
+.pipeline-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2563eb;
+}
+
+.event-date,
+.onboarding-task,
+.onboarding-due {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.onboarding-details {
+  flex: 1;
+}
+
+.charts-section {
+  margin-top: 1.5rem;
+}
+
+.charts-section .card-body {
+  height: 300px;
+}
+
+canvas {
+  max-height: 100%;
+}
+
+.dashboard-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-button.primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.dashboard-button.primary:hover {
+  background: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-button.secondary {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.dashboard-button.secondary:hover {
+  background: #d1d5db;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1280px) {
+  .main-grid { grid-template-columns: 1fr; }
+  .overview-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .hr-dashboard-container { padding: 0.7rem; margin: 0.7rem; }
+  .welcome-banner { flex-direction: column; gap: 1rem; text-align: center; }
+  .welcome-actions { flex-direction: column; width: 100%; gap: 0.5rem; }
+  .dashboard-button { width: 100%; justify-content: center; }
+  .overview-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .welcome-title { font-size: 1.2rem; }
+  .leave-table th,
+  .leave-table td { font-size: 0.75rem; padding: 0.25rem; }
+  .profile-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .profile-image { margin-right: 0; }
+  .hr-dashboard-container { padding: 0.3rem; margin: 0.3rem; }
+}
