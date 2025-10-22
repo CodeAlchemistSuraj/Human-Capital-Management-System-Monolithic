@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useMemo, u
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8080';
+const API_URL = 'http://172.16.2.3:8080';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
