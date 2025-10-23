@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import DashboardLayout from '../../components/shared/DashboardLayout';
 import DashboardCard from '../../components/shared/DashboardCard';
-import { FiUserPlus, FiCheckSquare, FiClipboard, FiList, FiFileText, FiX, FiUpload, FiTrash2 } from 'react-icons/fi';
+import StatsCard from '../../components/shared/StatsCard';
+import { FiUserPlus, FiCheckSquare, FiClipboard, FiList, FiFileText, FiX, FiUpload, FiTrash2, FiEye, FiCalendar, FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
 
 function Onboarding({ sidebarItems }) {
-  // Enhanced newHires data with checklist and documents
+  // Enhanced newHires data with more fields for better search
   const [newHires, setNewHires] = useState([
     {
       id: 1,
       name: 'Grace Hopper',
       position: 'Data Scientist',
+      department: 'Data Science',
       status: 'Pending Tasks',
       startDate: '2025-07-01',
+      email: 'grace.hopper@company.com',
+      location: 'New York',
       checklist: [
         { id: 1, task: 'Sign offer letter', completed: true, due: '2025-06-20', comments: 'Done via email' },
         { id: 2, task: 'Upload ID proof', completed: false, due: '2025-06-25', comments: '' },
@@ -25,8 +29,11 @@ function Onboarding({ sidebarItems }) {
       id: 2,
       name: 'Alan Turing',
       position: 'Machine Learning Engineer',
+      department: 'AI Research',
       status: 'Completed',
       startDate: '2025-06-15',
+      email: 'alan.turing@company.com',
+      location: 'London',
       checklist: [
         { id: 1, task: 'Sign offer letter', completed: true, due: '2025-06-01', comments: '' },
         { id: 2, task: 'Upload ID proof', completed: true, due: '2025-06-05', comments: '' },
@@ -40,8 +47,11 @@ function Onboarding({ sidebarItems }) {
       id: 3,
       name: 'Ada Lovelace',
       position: 'Software Developer',
+      department: 'Engineering',
       status: 'Pending Documents',
       startDate: '2025-07-10',
+      email: 'ada.lovelace@company.com',
+      location: 'San Francisco',
       checklist: [
         { id: 1, task: 'Sign offer letter', completed: true, due: '2025-06-28', comments: '' },
         { id: 2, task: 'Upload ID proof', completed: false, due: '2025-07-05', comments: '' },
@@ -55,8 +65,11 @@ function Onboarding({ sidebarItems }) {
       id: 4,
       name: 'Linus Torvalds',
       position: 'Kernel Developer',
+      department: 'Systems Engineering',
       status: 'Completed',
       startDate: '2025-06-01',
+      email: 'linus.torvalds@company.com',
+      location: 'Remote',
       checklist: [
         { id: 1, task: 'Sign offer letter', completed: true, due: '2025-05-20', comments: '' },
         { id: 2, task: 'Upload ID proof', completed: true, due: '2025-05-25', comments: '' },
@@ -72,16 +85,21 @@ function Onboarding({ sidebarItems }) {
   const [showModal, setShowModal] = useState(false);
   const [newTask, setNewTask] = useState("");
   const [newTaskDue, setNewTaskDue] = useState("");
-  const [newTaskType, setNewTaskType] = useState("");
   const [newDocType, setNewDocType] = useState("");
+  
+  // Search and filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [departmentFilter, setDepartmentFilter] = useState("ALL");
+  const [locationFilter, setLocationFilter] = useState("ALL");
 
   // Helper function for status badge styling
   const getStatusBadgeClass = (status) => {
     switch (status) {
-      case 'Completed': return 'bg-green-100 text-green-800';
-      case 'Pending Tasks': return 'bg-yellow-100 text-yellow-800';
-      case 'Pending Documents': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Completed': return 'bg-success/20 text-success border border-success/30';
+      case 'Pending Tasks': return 'bg-warning/20 text-warning border border-warning/30';
+      case 'Pending Documents': return 'bg-error/20 text-error border border-error/30';
+      default: return 'bg-gray-100 text-gray-800 border border-gray-300';
     }
   };
 
@@ -91,6 +109,26 @@ function Onboarding({ sidebarItems }) {
     const completed = hire.checklist.filter(t => t.completed).length;
     return total ? Math.round((completed / total) * 100) : 0;
   };
+
+  // Filter new hires based on search and filters
+  const filteredNewHires = newHires.filter(hire => {
+    const matchesSearch = 
+      hire.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hire.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hire.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hire.email.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === "ALL" || hire.status === statusFilter;
+    const matchesDepartment = departmentFilter === "ALL" || hire.department === departmentFilter;
+    const matchesLocation = locationFilter === "ALL" || hire.location === locationFilter;
+
+    return matchesSearch && matchesStatus && matchesDepartment && matchesLocation;
+  });
+
+  // Get unique values for filters
+  const departments = [...new Set(newHires.map(hire => hire.department))];
+  const locations = [...new Set(newHires.map(hire => hire.location))];
+  const statuses = [...new Set(newHires.map(hire => hire.status))];
 
   // Checklist toggle
   const toggleTask = (hireId, taskId) => {
@@ -163,6 +201,7 @@ function Onboarding({ sidebarItems }) {
     setSelectedHire(hire);
     setShowModal(true);
   };
+
   const closeModal = () => {
     setShowModal(false);
     setSelectedHire(null);
@@ -171,131 +210,466 @@ function Onboarding({ sidebarItems }) {
     setNewDocType("");
   };
 
-  return (
-    <DashboardLayout sidebarItems={sidebarItems}>
-      <div className="flex items-center justify-start text-gray-800 mb-8 ml-2">
-        <FiUserPlus className="text-4xl mr-4 text-purple-600 drop-shadow-md" />
-        <h2 className="text-3xl font-extrabold tracking-tight">New Hire Onboarding</h2>
-      </div>
-      <p className="text-lg text-gray-700 mb-8 leading-relaxed max-w-2xl mx-auto text-center">
-        Streamline the onboarding process for new hires, ensuring all tasks, documents, and introductions are completed smoothly.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-        <DashboardCard className="p-6 rounded-2xl shadow-md bg-gradient-to-br from-purple-50 to-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-purple-600 font-semibold">Upcoming Hires</p>
-              <h2 className="text-3xl font-bold text-purple-800">{newHires.length}</h2>
-            </div>
-            <FiUserPlus className="text-purple-400 text-4xl" />
-          </div>
-        </DashboardCard>
-        <DashboardCard className="p-6 rounded-2xl shadow-md bg-gradient-to-br from-pink-50 to-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-pink-600 font-semibold">Pending Checklists</p>
-              <h2 className="text-3xl font-bold text-pink-800">{newHires.reduce((acc, h) => acc + h.checklist.filter(t => !t.completed).length, 0)}</h2>
-            </div>
-            <FiClipboard className="text-pink-400 text-4xl" />
-          </div>
-        </DashboardCard>
-        <DashboardCard className="p-6 rounded-2xl shadow-md bg-gradient-to-br from-indigo-50 to-white">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-indigo-600 font-semibold">Onboarding Completed (This Month)</p>
-              <h2 className="text-3xl font-bold text-indigo-800">{newHires.filter(h => h.status === 'Completed').length}</h2>
-            </div>
-            <FiCheckSquare className="text-indigo-400 text-4xl" />
-          </div>
-        </DashboardCard>
-      </div>
-      <DashboardCard title="New Hires Progress" className="p-4 overflow-x-auto rounded-2xl shadow-md">
-        <div className="custom-table-container">
-          <table className="custom-table min-w-full divide-y divide-gray-200 rounded-xl overflow-hidden">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Position</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Progress</th>
-                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {newHires.map((hire) => (
-                <tr key={hire.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{hire.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{hire.position}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{hire.startDate}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(hire.status)}`}>{hire.status}</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="w-32 bg-gray-200 rounded-full h-3">
-                      <div className="bg-green-500 h-3 rounded-full transition-all duration-300" style={{ width: `${getProgress(hire)}%` }}></div>
-                    </div>
-                    <span className="ml-2 text-xs font-semibold text-gray-700">{getProgress(hire)}%</span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-pink-600 hover:text-pink-900 mr-4 transition-colors flex items-center" onClick={() => openModal(hire)}>
-                      <FiList className="mr-1" /> View Checklist
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </DashboardCard>
+  // Clear all filters
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("ALL");
+    setDepartmentFilter("ALL");
+    setLocationFilter("ALL");
+  };
 
-      {/* Checklist & Document Modal */}
-      {showModal && selectedHire && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 relative animate-fade-in border border-gray-100">
-            <button className="absolute top-3 right-3 text-gray-400 hover:text-gray-700" onClick={closeModal}>
-              <FiX size={24} />
-            </button>
-            <h3 className="text-2xl font-bold mb-6 flex items-center text-pink-600">
-              <FiList className="mr-2 text-pink-500" /> {selectedHire.name}'s Checklist
-            </h3>
-            <ul className="mb-6 space-y-2">
-              {selectedHire.checklist.map(item => (
-                <li key={item.id} className="flex items-center bg-gray-50 rounded-lg px-3 py-2 shadow-sm">
-                  <input type="checkbox" checked={item.completed} onChange={() => toggleTask(selectedHire.id, item.id)} className="mr-2 accent-pink-500" />
-                  <span className={`flex-1 ${item.completed ? 'line-through text-gray-400' : ''}`}>{item.task}</span>
-                  <span className="ml-2 text-xs text-gray-500">Due: {item.due}</span>
-                  <input type="text" value={item.comments} onChange={e => updateComment(selectedHire.id, item.id, e.target.value)} placeholder="Add comment" className="ml-2 border rounded px-2 py-1 text-xs" />
-                  <button onClick={() => removeTask(item.id)} className="ml-2 text-red-500 hover:text-red-700"><FiTrash2 /></button>
-                </li>
-              ))}
-            </ul>
-            <div className="flex mt-2 mb-6 gap-2">
-              <input type="text" value={newTask} onChange={e => setNewTask(e.target.value)} placeholder="New task" className="border rounded px-2 py-1 text-xs flex-1" />
-              <input type="date" value={newTaskDue} onChange={e => setNewTaskDue(e.target.value)} className="border rounded px-2 py-1 text-xs" />
-              <button onClick={addTask} className="bg-pink-500 text-white px-3 py-1 rounded text-xs">Add</button>
+  return (
+    <DashboardLayout
+      sidebarItems={sidebarItems}
+      pageTitle="New Hire Onboarding"
+      gradient="from-purple-600 to-purple-400"
+      className="min-h-screen"
+    >
+      <div className="p-6 space-y-6">
+        {/* Header Section */}
+        <div className="professional-card glass-card p-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-text">New Hire Onboarding</h1>
+              <p className="text-text-light mt-1">Streamline the onboarding process for new hires</p>
             </div>
-            <h4 className="text-lg font-semibold mb-2 flex items-center text-indigo-600">
-              <FiFileText className="mr-2 text-indigo-500" /> Documents
-            </h4>
-            <ul className="mb-4 space-y-1">
-              {selectedHire.documents.map(doc => (
-                <li key={doc.id} className="flex items-center bg-gray-50 rounded px-2 py-1">
-                  <span className="text-xs text-gray-500 mr-2">[{doc.type}]</span>
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline mr-2 text-sm">{doc.name}</a>
-                  <span className={`badge badge-${doc.status} text-xs px-2 py-1 rounded-full mr-2 ${doc.status === 'verified' ? 'bg-green-100 text-green-800' : doc.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>{doc.status}</span>
-                  <button onClick={() => updateDocStatus(doc.id, 'verified')} className="text-green-600 ml-2 hover:underline">Approve</button>
-                  <button onClick={() => updateDocStatus(doc.id, 'rejected')} className="text-red-600 ml-2 hover:underline">Reject</button>
-                </li>
+          </div>
+        </div>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatsCard
+            label="Upcoming Hires"
+            value={newHires.length}
+            color="border-primary"
+            icon={FiUserPlus}
+          />
+          <StatsCard
+            label="Pending Checklists"
+            value={newHires.reduce((acc, h) => acc + h.checklist.filter(t => !t.completed).length, 0)}
+            color="border-secondary"
+            icon={FiClipboard}
+          />
+          <StatsCard
+            label="Onboarding Completed"
+            value={newHires.filter(h => h.status === 'Completed').length}
+            color="border-success"
+            icon={FiCheckSquare}
+          />
+        </div>
+
+        {/* New Hires Progress Card */}
+        <DashboardCard 
+          title="New Hires Progress" 
+          icon={FiList}
+          className="professional-card"
+        >
+          <div className="p-4 space-y-4">
+            {/* Search and Filters */}
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 flex flex-col md:flex-row gap-2">
+                <div className="relative flex-1">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
+                  <input
+                    type="text"
+                    placeholder="Search by name, position, department, or email..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                  />
+                </div>
+                <div className="relative flex-1">
+                  <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                  >
+                    <option value="ALL">All Status</option>
+                    {statuses.map(status => (
+                      <option key={status} value={status}>{status}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="relative flex-1">
+                  <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
+                  <select
+                    value={departmentFilter}
+                    onChange={(e) => setDepartmentFilter(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                  >
+                    <option value="ALL">All Departments</option>
+                    {departments.map(dept => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="relative flex-1">
+                  <FiFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-light" />
+                  <select
+                    value={locationFilter}
+                    onChange={(e) => setLocationFilter(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                  >
+                    <option value="ALL">All Locations</option>
+                    {locations.map(location => (
+                      <option key={location} value={location}>{location}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center px-4 py-2 border border-border rounded-lg text-sm font-medium text-text hover:bg-light transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+
+            {/* Results Count */}
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-text-light">
+                Showing {filteredNewHires.length} of {newHires.length} new hires
+              </p>
+            </div>
+
+            {/* New Hires Grid - No max height, proper scrolling */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+              {filteredNewHires.map((hire) => (
+                <div
+                  key={hire.id}
+                  className="border border-border rounded-lg p-4 hover:shadow-md transition-all duration-200 bg-surface"
+                >
+                  {/* Header Row */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start space-x-3 flex-1">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="border border-border bg-light rounded-md px-3 py-1">
+                            <h3 className="font-semibold text-text text-sm">{hire.name}</h3>
+                          </div>
+                          <div className={`rounded-full px-2 py-1 text-xs font-medium ${getStatusBadgeClass(hire.status)}`}>
+                            {hire.status}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <div className="border border-border rounded-md px-2 py-1 bg-surface">
+                            <span className="flex items-center gap-1 text-xs text-text-light">
+                              <FiUserPlus size={12} />
+                              {hire.position}
+                            </span>
+                          </div>
+                          <div className="border border-border rounded-md px-2 py-1 bg-surface">
+                            <span className="flex items-center gap-1 text-xs text-text-light">
+                              <FiCalendar size={12} />
+                              {hire.startDate}
+                            </span>
+                          </div>
+                          <div className="border border-border rounded-md px-2 py-1 bg-surface">
+                            <span className="text-xs text-text-light">{hire.department}</span>
+                          </div>
+                          <div className="border border-border rounded-md px-2 py-1 bg-surface">
+                            <span className="text-xs text-text-light">{hire.location}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 ml-2">
+                      <button
+                        onClick={() => openModal(hire)}
+                        className="text-primary hover:text-secondary p-1 rounded border border-transparent hover:border-primary/20 transition-colors"
+                        title="View Checklist"
+                      >
+                        <FiEye size={14} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Progress Section */}
+                  <div className="grid grid-cols-3 gap-2 mb-3 p-2 border border-border rounded-lg bg-light">
+                    <div className="text-center border-r border-border last:border-r-0">
+                      <div className="border border-primary/20 rounded-md p-1 bg-primary/5">
+                        <div className="text-lg font-bold text-primary">
+                          {hire.checklist.filter(t => t.completed).length}/{hire.checklist.length}
+                        </div>
+                      </div>
+                      <div className="text-xs text-text-light mt-1">Tasks</div>
+                    </div>
+                    <div className="text-center border-r border-border last:border-r-0">
+                      <div className="border border-secondary/20 rounded-md p-1 bg-secondary/5">
+                        <div className="text-lg font-bold text-secondary">
+                          {hire.documents.filter(d => d.status === 'verified').length}/{hire.documents.length}
+                        </div>
+                      </div>
+                      <div className="text-xs text-text-light mt-1">Docs</div>
+                    </div>
+                    <div className="text-center border-r border-border last:border-r-0">
+                      <div className={`border rounded-md p-1 ${getProgress(hire) === 100 ? 'border-success/20 bg-success/5' : 'border-warning/20 bg-warning/5'}`}>
+                        <div className={`text-lg font-bold ${getProgress(hire) === 100 ? 'text-success' : 'text-warning'}`}>
+                          {getProgress(hire)}%
+                        </div>
+                      </div>
+                      <div className="text-xs text-text-light mt-1">Progress</div>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="mb-3">
+                    <div className="flex justify-between text-xs text-text-light mb-1">
+                      <span>Onboarding Progress</span>
+                      <span>{getProgress(hire)}%</span>
+                    </div>
+                    <div className="w-full bg-light rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                          getProgress(hire) === 100 ? 'bg-success' : 
+                          getProgress(hire) >= 50 ? 'bg-primary' : 'bg-warning'
+                        }`}
+                        style={{ width: `${getProgress(hire)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="flex flex-wrap gap-1 p-2 border border-border rounded-lg bg-light">
+                    <button
+                      onClick={() => openModal(hire)}
+                      className="flex items-center px-2 py-1 text-xs border border-primary/20 bg-primary/5 text-primary rounded hover:bg-primary/10 transition-colors"
+                    >
+                      <FiList size={12} className="mr-1" />
+                      View Details
+                    </button>
+                    <button
+                      onClick={() => handleUpload({ target: { files: [new File([], 'document.pdf')] } }, hire.id)}
+                      className="flex items-center px-2 py-1 text-xs border border-secondary/20 bg-secondary/5 text-secondary rounded hover:bg-secondary/10 transition-colors"
+                    >
+                      <FiUpload size={12} className="mr-1" />
+                      Upload Doc
+                    </button>
+                  </div>
+                </div>
               ))}
-            </ul>
-            <div className="flex items-center mb-2 gap-2">
-              <input type="text" value={newDocType} onChange={e => setNewDocType(e.target.value)} placeholder="Document type (e.g., ID Proof, Offer Letter)" className="border rounded px-2 py-1 text-xs flex-1" />
-              <label className="flex items-center cursor-pointer">
-                <FiUpload className="mr-2 text-gray-500" />
-                <input type="file" className="hidden" onChange={e => handleUpload(e, selectedHire.id)} />
-                <span className="text-sm text-gray-700">Upload</span>
-              </label>
+            </div>
+
+            {/* Empty State */}
+            {filteredNewHires.length === 0 && (
+              <div className="text-center py-12">
+                <FiSearch className="mx-auto text-4xl text-text-light mb-3" />
+                <p className="text-text font-medium">No new hires found</p>
+                <p className="text-text-light text-sm mt-1">Try adjusting your search criteria or clear filters</p>
+              </div>
+            )}
+          </div>
+        </DashboardCard>
+      </div>
+
+      {/* Checklist & Document Modal - Fixed with proper overlay behavior */}
+      {showModal && selectedHire && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-dark bg-opacity-40 p-4"
+          onClick={closeModal} // Close when clicking outside
+        >
+          <div 
+            className="professional-card w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <FiList className="text-primary mr-3" size={24} />
+                  <h3 className="text-xl font-bold text-text">{selectedHire.name}'s Onboarding</h3>
+                </div>
+                <button 
+                  className="text-text-light hover:text-text transition-colors p-1 rounded hover:bg-light"
+                  onClick={closeModal}
+                >
+                  <FiX size={24} />
+                </button>
+              </div>
+
+              {/* Candidate Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 border border-border rounded-lg bg-light">
+                <div>
+                  <h4 className="font-semibold text-text mb-2">Candidate Information</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-text-light">Position:</span>
+                      <span className="text-text font-medium">{selectedHire.position}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-light">Department:</span>
+                      <span className="text-text font-medium">{selectedHire.department}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-light">Location:</span>
+                      <span className="text-text font-medium">{selectedHire.location}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-light">Email:</span>
+                      <span className="text-text font-medium">{selectedHire.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-text-light">Start Date:</span>
+                      <span className="text-text font-medium">{selectedHire.startDate}</span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-text mb-2">Progress Overview</h4>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">{selectedHire.checklist.filter(t => t.completed).length}</div>
+                      <div className="text-sm text-text-light">Tasks Done</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-secondary">{selectedHire.documents.filter(d => d.status === 'verified').length}</div>
+                      <div className="text-sm text-text-light">Docs Verified</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-success">{getProgress(selectedHire)}%</div>
+                      <div className="text-sm text-text-light">Overall Progress</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Two Column Layout for Checklist and Documents */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Checklist Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-text flex items-center">
+                      <FiCheckSquare className="mr-2 text-primary" />
+                      Onboarding Checklist
+                    </h4>
+                  </div>
+                  
+                  <div className="space-y-2 max-h-80 overflow-y-auto pr-2">
+                    {selectedHire.checklist.map(item => (
+                      <div key={item.id} className="flex items-center gap-3 p-3 border border-border rounded-lg bg-surface hover:bg-light/50 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          checked={item.completed} 
+                          onChange={() => toggleTask(selectedHire.id, item.id)} 
+                          className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
+                        />
+                        <div className="flex-1">
+                          <div className={`text-sm font-medium ${item.completed ? 'line-through text-text-light' : 'text-text'}`}>
+                            {item.task}
+                          </div>
+                          <div className="flex items-center gap-4 mt-1">
+                            <div className="border border-border rounded-md px-2 py-1 bg-light">
+                              <span className="text-xs text-text-light flex items-center gap-1">
+                                <FiCalendar size={10} />
+                                Due: {item.due}
+                              </span>
+                            </div>
+                            {item.comments && (
+                              <div className="border border-border rounded-md px-2 py-1 bg-light">
+                                <span className="text-xs text-text-light">Note: {item.comments}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => removeTask(item.id)}
+                          className="text-error hover:text-error/80 p-1 rounded border border-transparent hover:border-error/20 transition-colors"
+                        >
+                          <FiTrash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add New Task */}
+                  <div className="flex gap-2 mt-4">
+                    <input 
+                      type="text" 
+                      value={newTask} 
+                      onChange={e => setNewTask(e.target.value)} 
+                      placeholder="New task description" 
+                      className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                    />
+                    <input 
+                      type="date" 
+                      value={newTaskDue} 
+                      onChange={e => setNewTaskDue(e.target.value)} 
+                      className="px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                    />
+                    <button 
+                      onClick={addTask}
+                      className="flex items-center px-4 py-2 bg-primary text-surface rounded-lg hover:bg-secondary transition-colors text-sm"
+                    >
+                      <FiPlus size={16} className="mr-1" />
+                      Add
+                    </button>
+                  </div>
+                </div>
+
+                {/* Documents Section */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-lg font-semibold text-text flex items-center">
+                      <FiFileText className="mr-2 text-secondary" />
+                      Documents
+                    </h4>
+                  </div>
+
+                  <div className="space-y-2 max-h-80 overflow-y-auto pr-2 mb-4">
+                    {selectedHire.documents.map(doc => (
+                      <div key={doc.id} className="flex items-center justify-between p-3 border border-border rounded-lg bg-surface">
+                        <div className="flex items-center gap-3">
+                          <div className="border border-border rounded-md px-2 py-1 bg-light">
+                            <span className="text-xs font-medium text-text">{doc.type}</span>
+                          </div>
+                          <span className="text-sm text-text">{doc.name}</span>
+                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            doc.status === 'verified' ? 'bg-success/20 text-success border border-success/30' :
+                            doc.status === 'pending' ? 'bg-warning/20 text-warning border border-warning/30' :
+                            'bg-error/20 text-error border border-error/30'
+                          }`}>
+                            {doc.status}
+                          </span>
+                        </div>
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => updateDocStatus(doc.id, 'verified')}
+                            className="text-success hover:text-success/80 text-sm font-medium"
+                          >
+                            Approve
+                          </button>
+                          <button 
+                            onClick={() => updateDocStatus(doc.id, 'rejected')}
+                            className="text-error hover:text-error/80 text-sm font-medium"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Upload New Document */}
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={newDocType} 
+                      onChange={e => setNewDocType(e.target.value)} 
+                      placeholder="Document type" 
+                      className="flex-1 px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-surface text-text text-sm"
+                    />
+                    <label className="flex items-center px-4 py-2 border border-border rounded-lg hover:bg-light transition-colors cursor-pointer text-sm">
+                      <FiUpload className="mr-2 text-text-light" />
+                      <span className="text-text">Upload</span>
+                      <input 
+                        type="file" 
+                        className="hidden" 
+                        onChange={e => handleUpload(e, selectedHire.id)} 
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
